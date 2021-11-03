@@ -25,14 +25,14 @@
             $validator = Validator::make($r->all(),[
                 'hsc_mathematics_subj' => 'required|boolean',
                 'hsc_biology_subj' => 'required|boolean',
-                'admission_mathematics_marks' => 'required|numeric',
-                'admission_physics_marks' => 'required|numeric',
-                'admission_chemistry_marks' => 'required|numeric',
-                'admission_biology_marks' => 'required|numeric',
+                'admission_mathematics_marks' => 'required|numeric|min:-2.5|max:10',
+                'admission_physics_marks' => 'required|numeric|min:-2.5|max:10',
+                'admission_chemistry_marks' => 'required|numeric|min:-2.5|max:10',
+                'admission_biology_marks' => 'required|numeric|min:-2.5|max:10',
             ]);
             if ($validator->fails()) 
             {
-                return response()->json($validator->errors(), 422);
+                return response()->json($validator->errors(), 422); //unprocessable entity code (semantic errors)
             }
             //validations end
             //instance create start
@@ -64,9 +64,9 @@
             //chain dp end
 
             //not eligible for any subject
-            if(count($r['subj'])==0)
+            if(count($r['subj'])==null)
             {
-                return response()->json(['message' => "Whoops!!! you are not eligible for any subject."], 200);
+                return response()->json(['message' => "Whoops!!! you are not eligible for any subject."], 200); //'OK' code
             }
 
             //eligible for any subject
