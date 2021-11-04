@@ -14,5 +14,8 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // \App\Models\User::factory(10)->create();
+        $this->call(insert_records_in_gst_infos_table::class);
+        $this->call(insert_records_in_academic_infos_table::class);
+        $this->call(insert_records_in_subjects_table::class);
     }
 }

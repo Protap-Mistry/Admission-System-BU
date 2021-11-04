@@ -7,7 +7,7 @@ if(version_compare(PHP_VERSION, '7.2.0', '>=')) {
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\EligibleSubjectsController;
+use App\Http\Controllers\API\ApplyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +24,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-//Eligible criteria
+Route::post('/apply',[ApplyController::class,'apply']);
 
-Route::post('/yourEligibiilty',[EligibleSubjectsController::class,'yourLuck']);
+Route::post('/payment/apply',[ApplyController::class,'payment']);
+
+Route::post('/verification',[AuthController::class,'verify']);
+
+Route::post('/subject-choice',[ChoiceController::class,'choice']);

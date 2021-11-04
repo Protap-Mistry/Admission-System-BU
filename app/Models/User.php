@@ -8,9 +8,14 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+use Payment;
+use Choice;
+
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
+
+    protected $table= 'users';
 
     /**
      * The attributes that are mass assignable.
@@ -41,4 +46,13 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function choosen_subject()
+    {
+        return $this->hasOne(Choice::class);
+    }
+    public function payment()
+    {
+        return $this->hasOne(Payment::class);
+    }
 }
