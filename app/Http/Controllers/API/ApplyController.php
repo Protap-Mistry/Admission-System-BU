@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Arr;
 use App\EligibleSubjectsHelper\EligibleSubjects;
 use DB;
+use App\Models\User;
+use App\Models\Payment;
+
+use Illuminate\Support\Str;
 
 class ApplyController extends Controller
 {
@@ -52,7 +56,7 @@ class ApplyController extends Controller
 
         $subjects= new EligibleSubjects();
 
-        $eligible_subjects= $subjects->checker($gst_info, $academic_info, $unit_chng);
+        $eligible_subjects= $subjects->checker($gst_info, $academic_info, 2);
         return response()->json([
             'success'=> true,
             'Data' => $eligible_subjects,
@@ -66,9 +70,9 @@ class ApplyController extends Controller
         $validator = Validator::make($request->all(),[
             'hsc_roll' => 'required|digits:6|integer',
             'has_unit_change' => 'required|boolean',
-            'phone' => 'required|regex:/(^(\+88|0088)?(01){1}[3456789]{1}(\d){8})$/',
+            'phone' => 'required|regex:/(01)[0-9]{9}/',
             'email' => 'required|email',
-            'image' => 'nullable|mimes:png,jpg',
+            'image' => 'nullable|image|mimes:jpeg,bmp,svg,jpg,png|max:512',
             'present_address' => 'required',
             'permanent_address' => 'required',
         ]);
@@ -79,6 +83,7 @@ class ApplyController extends Controller
         //validations end
 
         $academic_info= DB::table('academic_infos')->where('hsc_roll', $request->hsc_roll)->first();
+        $gst_info= DB::table('gst_infos')->where('hsc_roll', $request->hsc_roll)->first();
 
         if(empty($academic_info))
         {
@@ -88,23 +93,80 @@ class ApplyController extends Controller
             ], 422);
         }
 
-        $user= new User();
-        $user->name= $academic_info->name;
-        $user->father_name= $academic_info->father_name;
-        $user->mother_name= $request->mother_name;
-        $user->image= $request->image;
-        $user->address= $request->address;
-        $user->division= $request->division;
-        $user->email= $request->email;
-        $user->password= bycrpt('123456');
-        $user->phone= $request->phone;
-        $user->code= $request->code;
-        $user->gst_roll= $gst_info->gst_roll;
-        $user->gst_unit= $gst_info->gst_unit;
-        $user->gst_position= $gst_info->gst_position;
-        $user->hsc_roll= $gst_info->hsc_roll;
-        $user->has_unit_change= $request->has_unit_change;
+        try {
+            \DB::beginTransaction();
 
+            //User model+table
+            $user= new User();
+
+            $user->name= $academic_info->name;
+            $user->father_name= $academic_info->father_name;
+            $user->mother_name= $academic_info->mother_name;
+            $user->image= $request->image;
+            $user->present_address= $request->present_address;
+            $user->permanent_address= $request->permanent_address;
+            $user->division= $academic_info->division;
+            $user->email= $request->email;
+            $user->password= bcrypt('123456');
+            $user->phone= $request->phone;
+            $user->gst_roll= $gst_info->gst_roll;
+            $user->gst_unit= $gst_info->gst_unit;
+            $user->gst_position= $gst_info->gst_position;
+            $user->hsc_roll= $gst_info->hsc_roll;
+            $user->has_unit_change= $request->has_unit_change;
+
+            $user->save();
+
+            //Payment model+table
+            $payment= new Payment();
+
+            $payment->transaction_id= (string) Str::orderedUuid();
+            $payment->method= "PayPal";
+
+            if ($user->has_unit_change == 1) {
+                if ($gst_info->gst_unit == 'A') {
+                    $payment->amount= "1000.00";
+                }elseif ($gst_info->gst_unit == 'B') {
+                    $payment->amount= "900.00";
+                }elseif ($gst_info->gst_unit == 'C') {
+                    $payment->amount= "800.00";
+                }
+            }
+            else {
+                 if ($gst_info->gst_unit == 'A') {
+                    $payment->amount= "600.00";
+                }elseif ($gst_info->gst_unit == 'B') {
+                    $payment->amount= "550.00";
+                }elseif ($gst_info->gst_unit == 'C') {
+                    $payment->amount= "500.00";
+                }
+            }
+
+            $payment->has_unit_change= $request->has_unit_change;
+            $payment->user_id= $user->id;
+
+            $payment->save();
+            
+            //Subjects with code
+
+            $subjects= new EligibleSubjects();
+
+            $eligible_subjects= $subjects->checker($gst_info, $academic_info, $request->has_unit_change);
+
+            \DB::commit();
+
+            
+
+            return response()->json([
+                'success'=> true,
+                'Data' => array('user' => $user, 'payment' => $payment, 'subjects' => $eligible_subjects),
+            ]);
+
+        } catch (Throwable $e) {
+            \DB::rollback();
+        }
+        
 
     }
+
 }
