@@ -1,8 +1,9 @@
+endpoint-1: http://127.0.0.1:8000/api/apply
+
 input:
 
 {
     "gst_roll": "17CSE029",
-    "gst_unit": "A",
     "hsc_roll": 123456,
     "hsc_board": "Jessore",
     "hsc_passing_year": "2015"
@@ -11,7 +12,56 @@ input:
 output:
 
 {
+    "success": true,
     "Data": {
+        "academic_info": {
+            "id": 1,
+            "name": "Protap Mistry",
+            "father_name": "dfgyhujikl",
+            "mother_name": "edtrfyuhkl",
+            "division": "Khulna",
+            "ssc_roll": "654321",
+            "ssc_group": "Science",
+            "ssc_board": "Jessore",
+            "ssc_passing_year": "2013",
+            "ssc_gpa": 5,
+            "hsc_roll": "123456",
+            "hsc_group": "Science",
+            "hsc_board": "Jessore",
+            "hsc_passing_year": "2015",
+            "hsc_gpa": 4.67,
+            "has_hsc_math": 1,
+            "has_hsc_physics": 1,
+            "has_hsc_chemistry": 1,
+            "has_hsc_biology": 1,
+            "has_hsc_statistics": 0,
+            "has_hsc_economics": 0,
+            "created_at": null,
+            "updated_at": null
+        },
+        "gst_info": {
+            "id": 1,
+            "gst_roll": "17CSE029",
+            "gst_unit": "A",
+            "gst_position": "1",
+            "gst_math_score": 15,
+            "gst_physics_score": 10,
+            "gst_chemistry_score": 10,
+            "gst_biology_score": null,
+            "gst_english_score": 5,
+            "gst_bangla_score": 5,
+            "gst_ict_score": 10,
+            "gst_accounting_score": null,
+            "gst_business_score": null,
+            "total_score": 55,
+            "hsc_roll": "123456",
+            "hsc_board": "Jessore",
+            "hsc_group": "Science",
+            "hsc_passing_year": "2015",
+            "stu_division": "Khulna",
+            "created_at": null,
+            "updated_at": null
+        },
         "subjects": [
             {
                 "id": 1,

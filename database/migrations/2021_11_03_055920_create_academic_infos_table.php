@@ -15,11 +15,17 @@ class CreateAcademicInfosTable extends Migration
     {
         Schema::create('academic_infos', function (Blueprint $table) {
             $table->id();
+            $table->string('name')->nullable();
+            $table->string('father_name')->nullable();
+            $table->string('mother_name')->nullable();
+            $table->string('division')->nullable();
+
             $table->string('ssc_roll')->nullable();
             $table->string('ssc_group')->nullable();
             $table->string('ssc_board')->nullable();
             $table->string('ssc_passing_year')->nullable();
             $table->double('ssc_gpa', 5, 2)->nullable();
+            
             $table->string('hsc_roll');
             $table->string('hsc_group')->nullable();
             $table->string('hsc_board')->nullable();

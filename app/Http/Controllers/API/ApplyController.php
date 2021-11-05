@@ -17,7 +17,6 @@ class ApplyController extends Controller
         //validations start
         $validator = Validator::make($request->all(),[
             'gst_roll' => 'required',
-            'gst_unit' => 'required',
             'hsc_roll' => 'required|digits:6|integer',
             'hsc_board' => 'required',
             'hsc_passing_year' => 'required|digits:4|integer',
@@ -28,34 +27,6 @@ class ApplyController extends Controller
         }
         //validations end
 
-        //  $rules= [
-        //          'gst_roll' => 'required',
-        //         'gst_unit' => 'required',
-        //         'hsc_roll' => 'required|digits:6|integer',
-        //         'hsc_board' => 'required',
-        //         'hsc_passing_year' => 'required|digits:4|integer|min:1900|max:'.(date('Y')+1),
-        //     ];
-        //     $customMessages= [
-        //         'gst_roll.required' => 'GST roll is required',
-        //         'gst_unit.required' => 'GST unit is required',
-        //         'hsc_roll.digits' => '',
-        //         'hsc_roll.required' => 'HSC roll is required',
-        //         'hsc_board.required' => 'HSC board already exist',
-        //         'hsc_passing_year.required' => 'HSC passing year is required'
-        //     ];    
-
-            // $academic_info= DB::table('academic_infos')->where('hsc_roll', $request->hsc_roll)
-            //                                         ->where('hsc_board', $request->hsc_board)
-            //                                         ->where('hsc_passing_year', $request->hsc_passing_year)->first();
-
-            // $gst_info= DB::table('gst_infos')->where('gst_roll', $request->gst_roll)->where('gst_unit', $request->gst_unit)->first();
-
-            // $validator= Validator::make($academic_info, $gst_info, $rules, $customMessages);
-
-            // if($validator->fails())
-            // {
-            //     return response()->json($validator->errors(), 422); //422 is the unprocessable entity code when validation failed
-            // }
         
         $academic_info= DB::table('academic_infos')->where('hsc_roll', $request->hsc_roll)
                                                     ->where('hsc_board', $request->hsc_board)
@@ -68,7 +39,7 @@ class ApplyController extends Controller
             ], 422);
         }
 
-        $gst_info= DB::table('gst_infos')->where('gst_roll', $request->gst_roll)->where('gst_unit', $request->gst_unit)->first();
+        $gst_info= DB::table('gst_infos')->where('gst_roll', $request->gst_roll)->first();
         if(empty($gst_info))
         {
             return response()->json([
@@ -81,21 +52,59 @@ class ApplyController extends Controller
 
         $subjects= new EligibleSubjects();
 
-        $eligible_subjects= $subjects->checker($gst_info,$academic_info, $unit_chng);
+        $eligible_subjects= $subjects->checker($gst_info, $academic_info, $unit_chng);
         return response()->json([
+            'success'=> true,
             'Data' => $eligible_subjects,
         ]);
-         //not eligible for any subject
-        if(count($request['subj'])==null)
+
+    }
+
+    public function payment(Request $request)
+    {
+        //validations start
+        $validator = Validator::make($request->all(),[
+            'hsc_roll' => 'required|digits:6|integer',
+            'has_unit_change' => 'required|boolean',
+            'phone' => 'required|regex:/(^(\+88|0088)?(01){1}[3456789]{1}(\d){8})$/',
+            'email' => 'required|email',
+            'image' => 'nullable|mimes:png,jpg',
+            'present_address' => 'required',
+            'permanent_address' => 'required',
+        ]);
+        if ($validator->fails()) 
         {
-            return response()->json(['message' => "Whoops!!! you are not eligible for any subject."], 200); //'OK' code
+            return response()->json($validator->errors(), 422); //unprocessable entity code (semantic errors)
+        }
+        //validations end
+
+        $academic_info= DB::table('academic_infos')->where('hsc_roll', $request->hsc_roll)->first();
+
+        if(empty($academic_info))
+        {
+            return response()->json([
+                'message' => "Whoops!!! Your academic info not matched.",
+                'academic_info' => $request['academic_info'],
+            ], 422);
         }
 
-        //eligible for any subject
-        return response()->json([
-            'message' => "Your eligible subject(s) for University of Barishal are listed below: ",
-            'subj' => $request['subj'],
-        ], 200);
+        $user= new User();
+        $user->name= $academic_info->name;
+        $user->father_name= $academic_info->father_name;
+        $user->mother_name= $request->mother_name;
+        $user->image= $request->image;
+        $user->address= $request->address;
+        $user->division= $request->division;
+        $user->email= $request->email;
+        $user->password= bycrpt('123456');
+        $user->phone= $request->phone;
+        $user->code= $request->code;
+        $user->gst_roll= $gst_info->gst_roll;
+        $user->gst_unit= $gst_info->gst_unit;
+        $user->gst_position= $gst_info->gst_position;
+        $user->hsc_roll= $gst_info->hsc_roll;
+        $user->has_unit_change= $request->has_unit_change;
+
 
     }
 }

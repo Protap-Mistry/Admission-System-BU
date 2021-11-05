@@ -297,8 +297,8 @@
 
             //     }
             // }
-            info(array('subjects' => $subjects, 'subject_with_unit_change' => $subject_with_unit_change));
-            return array('subjects' => $subjects, 'subject_with_unit_change' => $subject_with_unit_change);
+            info(array('academic_info' => $academic_info, 'gst_info' => $gst_info, 'subjects' => $subjects, 'subject_with_unit_change' => $subject_with_unit_change));
+            return array('academic_info' => $academic_info, 'gst_info' => $gst_info, 'subjects' => $subjects, 'subject_with_unit_change' => $subject_with_unit_change);
         }
     }
     
