@@ -64,6 +64,39 @@ class ApplyController extends Controller
 
     }
 
+    public function get_student(Request $request)
+    {
+        //validations start
+        $validator = Validator::make($request->all(),[
+            'hsc_roll' => 'required|digits:6|integer',
+        ]);
+        if ($validator->fails()) 
+        {
+            return response()->json($validator->errors(), 422); //unprocessable entity code (semantic errors)
+        }
+        //validations end
+
+        $academic_info= DB::table('academic_infos')->where('hsc_roll', $request->hsc_roll)->first();
+
+        if(empty($academic_info))
+        {
+            return response()->json([
+                'message' => "Whoops!!! Your academic info not matched.",
+                'academic_info' => $request['academic_info'],
+            ], 422);
+        }
+
+        $gst_info= DB::table('gst_infos')->where('hsc_roll', $request->hsc_roll)->first();
+
+        $subjects= new EligibleSubjects();
+
+        $eligible_subjects= $subjects->checker($gst_info, $academic_info, 2);
+        return response()->json([
+            'success'=> true,
+            'Data' => $eligible_subjects,
+        ]);
+    }
+
     public function payment(Request $request)
     {
         //validations start
@@ -91,6 +124,22 @@ class ApplyController extends Controller
                 'message' => "Whoops!!! Your academic info not matched.",
                 'academic_info' => $request['academic_info'],
             ], 422);
+        }
+
+        //Subjects with code
+
+        $subjects= new EligibleSubjects();
+
+        $eligible_subjects= $subjects->checker($gst_info, $academic_info, $request->has_unit_change);
+
+        $user= User::where('hsc_roll', $request->hsc_roll)->first();
+
+        if($user != null)
+        {
+            return response()->json([
+                'success'=> true,
+                'Data' => array('user' => $user, 'payment' => $user->payment, 'subjects' => $eligible_subjects),
+            ]);
         }
 
         try {
@@ -147,11 +196,6 @@ class ApplyController extends Controller
 
             $payment->save();
             
-            //Subjects with code
-
-            $subjects= new EligibleSubjects();
-
-            $eligible_subjects= $subjects->checker($gst_info, $academic_info, $request->has_unit_change);
 
             \DB::commit();
 

@@ -26,8 +26,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/apply',[ApplyController::class,'apply']);
 
-Route::post('apply/payment',[ApplyController::class,'payment']);
+Route::post('/get-student',[ApplyController::class,'get_student']);
 
-Route::get('/deletions',[ApplyController::class,'delete']);
+Route::post('apply/payment',[ApplyController::class,'payment']);
 
 Route::post('/subject-choice',[ChoiceController::class,'choice']);
