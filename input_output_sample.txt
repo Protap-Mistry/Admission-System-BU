@@ -148,6 +148,7 @@ output:
     "success": true,
     "Data": {
         "user": {
+            "id": 3,
             "name": "Protap Mistry",
             "father_name": "dfgyhujikl",
             "mother_name": "edtrfyuhkl",
@@ -156,25 +157,69 @@ output:
             "permanent_address": "Khulna",
             "division": "Khulna",
             "email": "admin@gmail.com",
+            "email_verified_at": null,
             "phone": "01728145671",
+            "code": null,
             "gst_roll": "17CSE029",
             "gst_unit": "A",
             "gst_position": "1",
             "hsc_roll": "123456",
             "has_unit_change": 1,
-            "updated_at": "2021-11-05T13:49:28.000000Z",
+            "has_auto_migrate": 1,
             "created_at": "2021-11-05T13:49:28.000000Z",
-            "id": 3
+            "updated_at": "2021-11-06T14:59:17.000000Z",
+            "payment": {
+                "id": 2,
+                "transaction_id": "94cde425-edc2-4537-957d-9dfdcab88dd4",
+                "method": "PayPal",
+                "amount": 1000,
+                "status": null,
+                "has_unit_change": 1,
+                "user_id": 3,
+                "created_at": "2021-11-05T13:49:28.000000Z",
+                "updated_at": "2021-11-05T13:49:28.000000Z"
+            },
+            "choosen_subject": {
+                "id": 2,
+                "rank_1": "math",
+                "rank_2": "cse",
+                "rank_3": "phy",
+                "rank_4": null,
+                "rank_5": null,
+                "rank_6": null,
+                "rank_7": null,
+                "rank_8": null,
+                "rank_9": null,
+                "rank_10": null,
+                "rank_11": null,
+                "rank_12": null,
+                "rank_13": null,
+                "rank_14": null,
+                "rank_15": null,
+                "rank_16": null,
+                "rank_17": null,
+                "rank_18": null,
+                "rank_19": null,
+                "rank_20": null,
+                "rank_21": null,
+                "rank_22": null,
+                "rank_23": null,
+                "rank_24": null,
+                "user_id": 3,
+                "created_at": "2021-11-06T14:42:41.000000Z",
+                "updated_at": "2021-11-06T14:43:56.000000Z"
+            }
         },
         "payment": {
+            "id": 2,
             "transaction_id": "94cde425-edc2-4537-957d-9dfdcab88dd4",
             "method": "PayPal",
-            "amount": "1000.00",
+            "amount": 1000,
+            "status": null,
             "has_unit_change": 1,
             "user_id": 3,
-            "updated_at": "2021-11-05T13:49:28.000000Z",
             "created_at": "2021-11-05T13:49:28.000000Z",
-            "id": 2
+            "updated_at": "2021-11-05T13:49:28.000000Z"
         },
         "subjects": [
             {
@@ -237,7 +282,8 @@ output:
                 "subj_name": "Finance and Banking",
                 "subj_code": "fb"
             }
-        ]
+        ],
+        "choice_given": true
     }
 }
 
@@ -367,4 +413,52 @@ output:
             }
         ]
     }
+}
+
+endpoint- 4: http://127.0.0.1:8000/api/subject-choice
+
+input:
+
+{
+    "hsc_roll": 123456,
+    "has_auto_migrate": 1,
+    "subjects":[
+        {"subj_name":"CSE","subj_code":"cse"},
+        {"subj_name":"Math","subj_code":"math"},
+        {"subj_name":"Physics","subj_code":"phy"},
+        {"subj_name":"Chemistry","subj_code":"chem"}
+        ] 
+}
+
+output:
+
+{
+    "id": 2,
+    "rank_1": "cse",
+    "rank_2": "math",
+    "rank_3": "phy",
+    "rank_4": "chem",
+    "rank_5": null,
+    "rank_6": null,
+    "rank_7": null,
+    "rank_8": null,
+    "rank_9": null,
+    "rank_10": null,
+    "rank_11": null,
+    "rank_12": null,
+    "rank_13": null,
+    "rank_14": null,
+    "rank_15": null,
+    "rank_16": null,
+    "rank_17": null,
+    "rank_18": null,
+    "rank_19": null,
+    "rank_20": null,
+    "rank_21": null,
+    "rank_22": null,
+    "rank_23": null,
+    "rank_24": null,
+    "user_id": 3,
+    "created_at": "2021-11-06T14:42:41.000000Z",
+    "updated_at": "2021-11-06T15:22:04.000000Z"
 }

@@ -134,19 +134,20 @@ class ApplyController extends Controller
 
         $user= User::where('hsc_roll', $request->hsc_roll)->first();
 
-        if($user != null)
-        {
-            return response()->json([
-                'success'=> true,
-                'Data' => array('user' => $user, 'payment' => $user->payment, 'subjects' => $eligible_subjects),
-            ]);
-        }
+        // if($user != null)
+        // {
+        //     return response()->json([
+        //         'success'=> true,
+        //         'Data' => array('user' => $user, 'payment' => $user->payment, 'subjects' => $eligible_subjects, 'choice_given'=> !is_null($user->choosen_subject)),
+        //     ]);
+        // }
 
         try {
             \DB::beginTransaction();
 
             //User model+table
-            $user= new User();
+            if($user==null)
+                $user= new User();
 
             $user->name= $academic_info->name;
             $user->father_name= $academic_info->father_name;
@@ -203,7 +204,7 @@ class ApplyController extends Controller
 
             return response()->json([
                 'success'=> true,
-                'Data' => array('user' => $user, 'payment' => $payment, 'subjects' => $eligible_subjects),
+                'Data' => array('user' => $user, 'payment' => $user->payment, 'subjects' => $eligible_subjects, 'choice_given'=> !is_null($user->choosen_subject)),
             ]);
 
         } catch (Throwable $e) {

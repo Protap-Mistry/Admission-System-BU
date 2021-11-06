@@ -15,8 +15,6 @@ class CreateChoosenSubjectsTable extends Migration
     {
         Schema::create('choosen_subjects', function (Blueprint $table) {
             $table->id();
-            $table->string('subj_name')->nullable();
-            $table->string('subj_code')->unique();
             $table->string('rank_1')->nullable();
             $table->string('rank_2')->nullable();
             $table->string('rank_3')->nullable();
