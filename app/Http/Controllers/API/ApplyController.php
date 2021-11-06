@@ -195,12 +195,9 @@ class ApplyController extends Controller
             $payment->has_unit_change= $request->has_unit_change;
             $payment->user_id= $user->id;
 
-            $payment->save();
-            
+            $payment->save();           
 
-            \DB::commit();
-
-            
+            \DB::commit();            
 
             return response()->json([
                 'success'=> true,
@@ -209,8 +206,7 @@ class ApplyController extends Controller
 
         } catch (Throwable $e) {
             \DB::rollback();
-        }
-        
+        }        
 
     }
 

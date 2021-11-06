@@ -35,7 +35,10 @@ class ChoiceController extends Controller
             $user->save();
         }
         else {
-            return;
+            return response()->json([
+                'success'=> false,
+                'Data' => "Whopps!!! Something went wrong.",
+            ]);
         }
         try {
 
@@ -47,7 +50,7 @@ class ChoiceController extends Controller
                 $subject_choice= new Choice();
 
             $subject_choice->user_id = $user->id;
-            //$subject_choice->save();
+            $subject_choice->save();
 
             if(!empty($request->subjects))
             {
@@ -66,43 +69,41 @@ class ChoiceController extends Controller
                     else if($key==5)
                         $subject_choice->rank_6 = $subject['subj_code'];
                     else if($key==6)
-                        $subject_choice->rank_6 = $subject['subj_code'];
-                    else if($key==7)
                         $subject_choice->rank_7 = $subject['subj_code'];
-                    else if($key==8)
+                    else if($key==7)
                         $subject_choice->rank_8 = $subject['subj_code'];
-                    else if($key==9)
+                    else if($key==8)
                         $subject_choice->rank_9 = $subject['subj_code'];
-                    else if($key==10)
+                    else if($key==9)
                         $subject_choice->rank_10 = $subject['subj_code'];
-                    else if($key==11)
+                    else if($key==10)
                         $subject_choice->rank_11 = $subject['subj_code'];
-                    else if($key==12)
+                    else if($key==11)
                         $subject_choice->rank_12 = $subject['subj_code'];
-                    else if($key==13)
+                    else if($key==12)
                         $subject_choice->rank_13 = $subject['subj_code'];
-                    else if($key==14)
+                    else if($key==13)
                         $subject_choice->rank_14 = $subject['subj_code'];
-                    else if($key==15)
+                    else if($key==14)
                         $subject_choice->rank_15 = $subject['subj_code'];
-                    else if($key==16)
+                    else if($key==15)
                         $subject_choice->rank_16 = $subject['subj_code'];
-                    else if($key==17)
+                    else if($key==16)
                         $subject_choice->rank_17 = $subject['subj_code'];
-                    else if($key==18)
+                    else if($key==17)
                         $subject_choice->rank_18 = $subject['subj_code'];
-                    else if($key==19)
+                    else if($key==18)
                         $subject_choice->rank_19 = $subject['subj_code'];
-                    else if($key==20)
+                    else if($key==19)
                         $subject_choice->rank_20 = $subject['subj_code'];
-                    else if($key==21)
+                    else if($key==20)
                         $subject_choice->rank_21 = $subject['subj_code'];
-                    else if($key==22)
+                    else if($key==21)
                         $subject_choice->rank_22 = $subject['subj_code'];
-                    else if($key==23)
+                    else if($key==22)
                         $subject_choice->rank_23 = $subject['subj_code'];
-                    else if($key==24)
-                        $subject_choice->rank2_4 = $subject['subj_code'];
+                    else if($key==23)
+                        $subject_choice->rank_24 = $subject['subj_code'];
                     
                     $subject_choice->save();
                 }
